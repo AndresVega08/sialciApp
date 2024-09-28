@@ -1,8 +1,9 @@
 export type RootStackParamList = {
     Login: undefined;    // Pantalla de inicio de sesión
     Register: undefined; // Pantalla de registro
-    Home: undefined;     // Pantalla principal
-    Details: { id: number };  // Pantalla de detalles con un parámetro
+    HomeScreen: undefined;     // Pantalla principal
+    EnvioForm: undefined;  // Pantalla de detalles con un parámetro
+    Productos: undefined; // Pantalla de productos
   };
   
   // Define la estructura del objeto Usuario

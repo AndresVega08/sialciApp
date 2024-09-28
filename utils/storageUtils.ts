@@ -4,12 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AUTH_TOKEN_KEY = 'authToken';
 
 // Guardar el token en AsyncStorage
-export const storeToken = async (token: string): Promise<void> => {
+export const storeToken = async (token: string) => {
   try {
-    await AsyncStorage.setItem(AUTH_TOKEN_KEY, token);
-  } catch (error) {
-    console.error('Error guardando el token:', error);
-    throw new Error('Error guardando el token');
+    await AsyncStorage.setItem('auth_token', token);
+  } catch (e) {
+    console.error('Error al almacenar el token', e);
   }
 };
 

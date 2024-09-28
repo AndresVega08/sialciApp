@@ -18,9 +18,6 @@ const RegisterScreen = ({ navigation }: any) => {
         password_Usua: password,
         nombre_Usua: name,
         apellidos_Usua: surname,
-        correo_Admi: adminEmail,
-        password_Admi: adminPassword,
-        rol: role,
       });
 
       if (response.status === 201) {
@@ -45,52 +42,41 @@ const RegisterScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Register</Text>
+      <Text style={styles.header}>Registro</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Correo electrónico"
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Contraseña"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder="Repetir contraseña contraseña"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre completo"
         value={name}
         onChangeText={setName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Surname"
-        value={surname}
+        placeholder="apellidos"
+        secureTextEntry
+        value={password}
         onChangeText={setSurname}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Admin Email (optional)"
-        value={adminEmail}
-        onChangeText={setAdminEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Admin Password (optional)"
-        secureTextEntry
-        value={adminPassword}
-        onChangeText={setAdminPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Role"
-        value={role}
-        onChangeText={setRole}
-      />
-      <Button title="Register" onPress={handleRegister} />
+      <Button title="Registrarse" onPress={handleRegister} />
     </View>
   );
 };

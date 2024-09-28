@@ -1,9 +1,15 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', 
-});
+const API_URL = 'http://192.168.1.2:8080/api/login'; // URL de tu backend
 
-export const login = (username: string, password: string) => {
-  return api.post('/login', { username, password });
+export const login = async (correoUsua: string, passwordUsua: string) => {
+  try {
+    const response = await axios.post(API_URL, {
+      correoUsua,
+      passwordUsua
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };

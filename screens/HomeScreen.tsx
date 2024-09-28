@@ -15,7 +15,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <TouchableOpacity style={styles.menuItem}>
+      <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('Productos')} 
+        >
           <MaterialIcons name="shopping-bag" size={30} color="#000" />
           <Text style={styles.menuText}>Productos</Text>
         </TouchableOpacity>

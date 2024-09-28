@@ -5,6 +5,7 @@ import LoginScreen from './screens/Login';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import EnvioForm from './screens/EnvioForm'; 
+import Productos from './screens/Productos';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,8 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
-        <Stack.Screen name="EnvioForm" component={EnvioForm} options={{ title: 'Enviar Formulario' }} /> 
+        <Stack.Screen name="EnvioForm" component={EnvioForm} options={{ title: 'Enviar Formulario' }} />
+        <Stack.Screen name="Productos" component={Productos} options={{ title: 'Productos' }} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
