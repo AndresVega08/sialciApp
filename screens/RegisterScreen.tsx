@@ -5,35 +5,49 @@ import axios from 'axios';
 const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // Estado para "Repetir contraseña"
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminPassword, setAdminPassword] = useState('');
-  const [role, setRole] = useState('');
 
   const handleRegister = async () => {
+    // Verificar si las contraseñas coinciden
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden');
+      return;
+    }
+
+    // Validar el correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'Por favor, ingrese un correo electrónico válido');
+      return;
+    }
+
+    // Validar la contraseña
+    const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres y una letra mayúscula');
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:8000/api/register', { 
-        correo_Usua: email,
-        password_Usua: password,
-        nombre_Usua: name,
-        apellidos_Usua: surname,
+      const response = await axios.post('http://192.168.1.2:8080/api/usuarios', { 
+        correoUsua: email,
+        passwordUsua: password,
+        nombreUsua: name,
+        apellidosUsua: surname,
       });
 
       if (response.status === 201) {
-        Alert.alert('Success', 'User registered successfully');
+        Alert.alert('Éxito', 'Usuario registrado exitosamente');
         navigation.navigate('Login'); // Navegar a la pantalla de login después del registro
       }
     } catch (error: any) {
-      // Manejo de errores más robusto
       if (error.response) {
-        // Error del servidor
-        Alert.alert('Error', error.response.data.message || 'Error en el registro'); // Usa 'message' si es más adecuado
+        Alert.alert('Error', error.response.data.message || 'Error en el registro');
       } else if (error.request) {
-        // Error en la solicitud
         Alert.alert('Error', 'No se recibió respuesta del servidor');
       } else {
-        // Error en la configuración de la solicitud
         Alert.alert('Error', 'Error en la configuración de la solicitud');
       }
       console.error('Error en el registro:', error);
@@ -58,10 +72,10 @@ const RegisterScreen = ({ navigation }: any) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Repetir contraseña contraseña"
+        placeholder="Repetir contraseña"
         secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        value={confirmPassword} // "Repetir contraseña" usa su propio estado
+        onChangeText={setConfirmPassword} // Asignar valor a confirmPassword
       />
       <TextInput
         style={styles.input}
@@ -71,9 +85,8 @@ const RegisterScreen = ({ navigation }: any) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="apellidos"
-        secureTextEntry
-        value={password}
+        placeholder="Apellidos"
+        value={surname}
         onChangeText={setSurname}
       />
       <Button title="Registrarse" onPress={handleRegister} />

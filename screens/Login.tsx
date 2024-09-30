@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
-import { login } from '../api/api';
+import { login } from '../api/api'; // Asegúrate de que esta función haga la llamada al endpoint correcto
 import { storeToken } from '../utils/storageUtils'; 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 
 type RootStackParamList = {
   Login: undefined;
@@ -18,12 +17,12 @@ type Props = {
 };
 
 const LoginScreen = ({ navigation }: Props) => {
-  const [correoUsua, setCorreoUsua] = useState('');
-  const [passwordUsua, setPasswordUsua] = useState('');
+  const [correo_Usua, setCorreo_Usua] = useState(''); // Cambiado a correo_Usua
+  const [password_Usua, setPassword_Usua] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await login(correoUsua, passwordUsua);
+      const response = await login(correo_Usua, password_Usua);
       console.log('Login response:', response);
       
       const token = response.data.access_token;
@@ -46,7 +45,6 @@ const LoginScreen = ({ navigation }: Props) => {
     }
   };
   
-
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
@@ -56,18 +54,18 @@ const LoginScreen = ({ navigation }: Props) => {
       <TextInput
         style={styles.input}
         placeholder="Correo"
-        value={correoUsua}
-        onChangeText={setCorreoUsua}
+        value={correo_Usua}
+        onChangeText={setCorreo_Usua} // Cambiado a setCorreo_Usua
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
         secureTextEntry
-        value={passwordUsua}
-        onChangeText={setPasswordUsua}
+        value={password_Usua}
+        onChangeText={setPassword_Usua}
       />
-       {/*Botón de login */}
+      {/* Botón de login */}
       <Button
         title="Login"
         onPress={handleLogin} // Aquí se usa la función de login
@@ -95,7 +93,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
     borderRadius: 100,
-
   },
   header: {
     fontSize: 24,
