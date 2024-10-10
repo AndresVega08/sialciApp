@@ -1,15 +1,24 @@
-import axios from 'axios';
+import apiClient from './apiClient'; 
 
-const API_URL = 'http://192.168.1.2:8080/api/login'; // URL de tu backend
-
+//Funcion para iniciar sesion
 export const login = async (correoUsua: string, passwordUsua: string) => {
   try {
-    const response = await axios.post(API_URL, {
+    const response = await apiClient.post('/login', {
       correoUsua,
       passwordUsua
     });
-    return response;
+    return response; 
   } catch (error) {
-    throw error;
+    throw error; 
+  }
+};
+
+// Función para cerrar sesión
+export const logout = async () => {
+  try {
+    const response = await apiClient.post('/logout'); 
+    return response; 
+  } catch (error) {
+    throw error; 
   }
 };

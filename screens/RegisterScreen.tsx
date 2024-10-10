@@ -5,7 +5,7 @@ import axios from 'axios';
 const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Estado para "Repetir contraseña"
+  const [confirmPassword, setConfirmPassword] = useState(''); 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
 
@@ -40,7 +40,7 @@ const RegisterScreen = ({ navigation }: any) => {
 
       if (response.status === 201) {
         Alert.alert('Éxito', 'Usuario registrado exitosamente');
-        navigation.navigate('Login'); // Navegar a la pantalla de login después del registro
+        navigation.navigate('Login'); 
       }
     } catch (error: any) {
       if (error.response) {
@@ -74,8 +74,8 @@ const RegisterScreen = ({ navigation }: any) => {
         style={styles.input}
         placeholder="Repetir contraseña"
         secureTextEntry
-        value={confirmPassword} // "Repetir contraseña" usa su propio estado
-        onChangeText={setConfirmPassword} // Asignar valor a confirmPassword
+        value={confirmPassword} 
+        onChangeText={setConfirmPassword} 
       />
       <TextInput
         style={styles.input}

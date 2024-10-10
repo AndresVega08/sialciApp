@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
-import { login } from '../api/api'; // Asegúrate de que esta función haga la llamada al endpoint correcto
-import { storeToken } from '../utils/storageUtils'; 
+import { View, TextInput, Button, StyleSheet, Alert, Image, Text } from 'react-native';
+import { login, logout } from '../api/api'; 
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useUserContext } from '../context/UserContext'; 
 
 type RootStackParamList = {
   Login: undefined;
@@ -17,21 +17,28 @@ type Props = {
 };
 
 const LoginScreen = ({ navigation }: Props) => {
-  const [correo_Usua, setCorreo_Usua] = useState(''); // Cambiado a correo_Usua
+  const [correo_Usua, setCorreo_Usua] = useState(''); 
   const [password_Usua, setPassword_Usua] = useState('');
+  const { setUser } = useUserContext();
 
   const handleLogin = async () => {
+    if (!correo_Usua.trim() || !password_Usua.trim()) {
+      Alert.alert('Error', 'Por favor, complete ambos campos.');
+      return;
+    }
+  
     try {
       const response = await login(correo_Usua, password_Usua);
       console.log('Login response:', response);
-      
-      const token = response.data.access_token;
   
-      if (token) {
-        await storeToken(token);  // Almacenar el token
-        navigation.navigate('HomeScreen');  // Navegar a la pantalla principal
+      if (response.status === 200) {
+        const { access_token } = response.data;
+        const userId = access_token; 
+        const userRole = 'user'; 
+        setUser(userId, correo_Usua, userRole);
+        navigation.navigate('HomeScreen');
       } else {
-        Alert.alert('Error', 'Token de acceso no recibido');
+        Alert.alert('Error', 'Credenciales inválidas');
       }
     } catch (err: any) {
       console.error('Error en el login:', err);
@@ -43,19 +50,33 @@ const LoginScreen = ({ navigation }: Props) => {
         Alert.alert('Error', 'Ocurrió un error inesperado');
       }
     }
+};
+
+  
+  const handleLogout = async () => {
+    try {
+      await logout();
+      Alert.alert('Éxito', 'Sesión cerrada');
+      navigation.navigate('Login');
+    } catch (err) {
+      console.error('Error cerrando sesión:', err);
+      Alert.alert('Error', 'Hubo un problema cerrando sesión');
+    }
   };
   
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
 
-      <Text style={styles.header}>Login</Text>
+      <View style={styles.header}>
+        <Text>Login</Text>
+      </View>
       
       <TextInput
         style={styles.input}
         placeholder="Correo"
         value={correo_Usua}
-        onChangeText={setCorreo_Usua} // Cambiado a setCorreo_Usua
+        onChangeText={setCorreo_Usua}
         keyboardType="email-address"
       />
       <TextInput
@@ -65,17 +86,9 @@ const LoginScreen = ({ navigation }: Props) => {
         value={password_Usua}
         onChangeText={setPassword_Usua}
       />
-      {/* Botón de login */}
-      <Button
-        title="Login"
-        onPress={handleLogin} // Aquí se usa la función de login
-      />
       
-      <Button
-        title="Registrarse"
-        onPress={() => navigation.navigate('Register')} 
-        color="gray"
-      />
+      <Button title="Login" onPress={handleLogin} />
+      <Button title="Registrarse" onPress={() => navigation.navigate('Register')} color="gray" />
     </View>
   );
 };
@@ -107,12 +120,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     borderRadius: 5,
-  },
-  button: {
-    padding: 12,
-    borderRadius: 5,
-    backgroundColor: '#4CAF50', 
-    marginBottom: 12,
   },
 });
 
