@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, BackHandler } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types'; 
+import { useUserContext } from '../context/UserContext'; // Para obtener el nombre del usuario
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'HomeScreen'>;
 
@@ -11,7 +12,8 @@ interface Props {
 }
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  
+  const { userName } = useUserContext(); // Obtenemos el nombre del usuario
+
   const handleLogout = async () => {
     try {
       // Lógica para cerrar sesión
@@ -23,8 +25,30 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  // Lógica para confirmar si el usuario quiere salir de la aplicación
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Confirmar salida', '¿Estás seguro de que deseas salir de la aplicación?', [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Salir', onPress: () => BackHandler.exitApp() },
+      ]);
+      return true; // Para evitar que la acción de retroceso predeterminada se ejecute
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove(); // Limpieza del listener al desmontar el componente
+  }, []);
+
   return (
     <View style={styles.container}>
+      {/* Mensaje de bienvenida */}
+      <Text style={styles.welcomeText}>Bienvenido {userName}</Text>
+
       <View style={styles.row}>
         <TouchableOpacity
           style={styles.menuItem}
@@ -77,6 +101,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',

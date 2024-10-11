@@ -4,7 +4,8 @@ interface UserContextType {
   userId: string | null;
   userEmail: string | null;
   userRole: string | null;
-  setUser: (id?: string, email?: string, role?: string) => void; // Permitir la actualización de uno o más
+  userName: string | null; 
+  setUser: (id?: string, email?: string, role?: string, name?: string) => void; 
   clearUser: () => void;
 }
 
@@ -14,21 +15,24 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null); // Añadir state para userName
 
-  const setUser = (id?: string, email?: string, role?: string) => {
+  const setUser = (id?: string, email?: string, role?: string, name?: string) => {
     if (id) setUserId(id);
     if (email) setUserEmail(email);
     if (role) setUserRole(role);
+    if (name) setUserName(name); // Almacenar el nombre del usuario aquí
   };
 
   const clearUser = () => {
     setUserId(null);
     setUserEmail(null);
     setUserRole(null);
+    setUserName(null); // Limpiar userName aquí
   };
 
   return (
-    <UserContext.Provider value={{ userId, userEmail, userRole, setUser, clearUser }}>
+    <UserContext.Provider value={{ userId, userEmail, userRole, userName, setUser, clearUser }}>
       {children}
     </UserContext.Provider>
   );
