@@ -8,6 +8,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import EnvioForm from './screens/EnvioForm'; 
 import Productos from './screens/Productos';
 import PedidosScreen from './screens/PedidosScreen';
+import AgregarProducto from './screens/AgregarProducto';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,11 @@ export default function App() {
             component={PedidosScreen} 
             options={{ title: 'Pedidos' }} 
           /> 
+          <Stack.Screen
+            name="AgregarProducto"
+            component={AgregarProducto}
+            options={{ title: 'Agregar Producto' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

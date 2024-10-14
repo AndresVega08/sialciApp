@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, BackHandler } from 're
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types'; 
-import { useUserContext } from '../context/UserContext'; // Para obtener el nombre del usuario
+import { useUserContext } from '../context/UserContext'; 
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'HomeScreen'>;
 

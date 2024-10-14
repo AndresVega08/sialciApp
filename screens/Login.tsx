@@ -32,10 +32,10 @@ const LoginScreen = ({ navigation }: Props) => {
         console.log('Login response:', response);
 
         if (response.status === 200) {
-            const { access_token, role, nombre_usua } = response.data; 
-            setUser(access_token, correo_Usua, role, nombre_usua); 
+            const { access_token, rol, nombre } = response.data; 
+            setUser(null, correo_Usua, rol, nombre, access_token); 
             
-          // Navegar a la pantalla HomeScreen
+            
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'HomeScreen' }],
@@ -54,7 +54,6 @@ const LoginScreen = ({ navigation }: Props) => {
         }
     }
 };
-
 
 const handleLogout = async () => {
   try {
