@@ -9,7 +9,8 @@ import EnvioForm from './screens/EnvioForm';
 import Productos from './screens/Productos';
 import PedidosScreen from './screens/PedidosScreen';
 import AgregarProducto from './screens/AgregarProducto';
-import DetallePedidoScreen from './screens/DetallePedidoScreen'; // Importa la pantalla DetallePedidoScreen
+import DetallePedidoScreen from './screens/DetallePedidoScreen'; 
+import EditarProducto from './screens/EditarProducto';
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,10 @@ export default function App() {
             name="DetallePedidoScreen" // Agregar la pantalla de detalles del pedido
             component={DetallePedidoScreen}
             options={{ title: 'Detalles del Pedido' }}
+          />
+          <Stack.Screen
+            name="EditarProducto"
+            component={EditarProducto}
           />
         </Stack.Navigator>
       </NavigationContainer>

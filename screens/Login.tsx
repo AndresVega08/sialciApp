@@ -35,7 +35,6 @@ const LoginScreen = ({ navigation }: Props) => {
             const { access_token, rol, nombre } = response.data; 
             setUser(null, correo_Usua, rol, nombre, access_token); 
             
-            
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'HomeScreen' }],
@@ -69,8 +68,8 @@ const handleLogout = async () => {
 return (
   <View style={styles.container}>
     <Image source={require('../assets/logo.png')} style={styles.logo} />
-
-    <Text style={styles.header}>Inicio de sesion</Text>
+    
+    <Text style={styles.header}>Inicio de sesión</Text>
     
     <TextInput
       style={styles.input}
@@ -78,6 +77,7 @@ return (
       value={correo_Usua}
       onChangeText={setCorreo_Usua}
       keyboardType="email-address"
+      autoCapitalize="none"
     />
     <TextInput
       style={styles.input}
@@ -89,7 +89,7 @@ return (
     
     {/* Botón de Login */}
     <TouchableOpacity style={styles.button} onPress={handleLogin}>
-      <Text style={styles.buttonText}>Login</Text>
+      <Text style={styles.buttonText}>Iniciar sesión</Text>
     </TouchableOpacity>
 
     {/* Botón de Registro */}
@@ -108,36 +108,64 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9', 
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 180, 
+    height: 180, 
     alignSelf: 'center',
-    marginBottom: 20,
-    borderRadius: 100,
+    marginBottom: 30, 
+    borderRadius: 90, 
+    shadowColor: '#000', 
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3, 
+    shadowRadius: 4.65, 
+    elevation: 8, 
+  
   },
   header: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 26,
+    marginBottom: 24,
     textAlign: 'center',
-    fontFamily: 'Open Sans',
+    fontFamily: 'Open Sans', // Asegúrate de que esta fuente esté disponible
+    fontWeight: 'bold',
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    borderRadius: 5,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1.5,
+    elevation: 2,
   },
   button: {
     backgroundColor: '#007bff',
-    padding: 12,
-    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 10,
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2.5,
+    elevation: 2,
   },
   buttonText: {
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

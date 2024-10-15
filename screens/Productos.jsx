@@ -1,30 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, Button, FlatList, Image, StyleSheet, RefreshControl } from 'react-native';
 import { useUserContext } from '../context/UserContext';
 import axios from 'axios';
 
 const Productos = ({ navigation }) => {
   const { userRole } = useUserContext();
   const [productos, setProductos] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Función para obtener productos desde la API
+  const fetchProductos = async () => {
+    try {
+      const response = await axios.get('http://192.168.1.2:8080/api/productos');
+      console.log('Productos:', response.data); 
+      setProductos(response.data);
+    } catch (err) {
+      console.error('Error fetching productos:', err);
+    }
+  };
 
   useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        const response = await axios.get('http://192.168.1.2:8080/api/productos');
-        console.log('Productos:', response.data);
-        setProductos(response.data);
-      } catch (err) {
-        console.error('Error fetching productos:', err);
-      }
-    };
-
-    fetchProductos();
+    fetchProductos(); 
   }, []);
 
+  
+  const handleAgregarProducto = () => {
+    navigation.navigate('AgregarProducto', {
+      onGoBack: () => {
+        fetchProductos(); 
+      },
+    });
+  };
+
+  // Función para manejar la eliminación de productos
+  const handleEliminarProducto = async (id) => {
+    try {
+      const response = await axios.delete(`http://192.168.1.2:8080/api/productos/${id}`);
+      if (response.status === 200) {
+        setProductos((prevProductos) => prevProductos.filter((producto) => producto.id !== id));
+      } else {
+        console.error('Error eliminando producto:', response.data);
+      }
+    } catch (err) {
+      console.error('Error eliminando producto:', err);
+    }
+  };
+
+  // Función para refrescar la lista de productos
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchProductos().then(() => setRefreshing(false));
+  }, []);
+
+  // Renderiza cada producto
   const renderProduct = ({ item }) => (
     <View style={styles.productContainer}>
       <Image
-        source={{ uri: `data:image/jpeg;base64,${item.imagen}` }} // Ajusta según el tipo de imagen
+        source={{ uri: `data:image/jpeg;base64,${item.imagen}` }} 
         style={styles.productImage}
       />
       <View style={styles.productDetails}>
@@ -41,29 +73,15 @@ const Productos = ({ navigation }) => {
     </View>
   );
 
-  const handleAgregarProducto = () => {
-    navigation.navigate('AgregarProducto');
-  };
-
-  const handleEliminarProducto = async (id) => {
-    try {
-      const response = await axios.delete(`http://192.168.1.2:8080/api/productos/${id}`);
-      if (response.status === 200) {
-        setProductos((prevProductos) => prevProductos.filter((producto) => producto.id !== id));
-      } else {
-        console.error('Error eliminando producto:', response.data);
-      }
-    } catch (err) {
-      console.error('Error eliminando producto:', err);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <FlatList
         data={productos}
         renderItem={renderProduct}
         keyExtractor={(item) => item.id.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
       {userRole === '1' && (
         <Button title="Agregar Producto" onPress={handleAgregarProducto} />
