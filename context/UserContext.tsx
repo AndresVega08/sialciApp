@@ -17,7 +17,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
-  const [userToken, setUserToken] = useState<string | null>(null); // Añadido para guardar el token
+  const [userToken, setUserToken] = useState<string | null>(null); 
 
   const setUser = (id?: string | null, email?: string | null, role?: string | null, name?: string | null, token?: string | null) => {
   if (id) setUserId(id); // Guardar el userId solo si no es null

@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, Text } from 'react-native';
 import axios from 'axios';
-import { launchImageLibrary } from 'react-native-image-picker'; 
+import * as ImagePicker from 'expo-image-picker';
 
 const AgregarProducto = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [precio, setPrecio] = useState('');
-  const [imagen, setImagen] = useState(null); 
+  const [imagen, setImagen] = useState(null);
+
+  const requestPermission = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'La aplicación necesita acceso a la galería para seleccionar imágenes.');
+    }
+  };
+
+  useEffect(() => {
+    requestPermission();
+  }, []);
 
   const handleAgregarProducto = async () => {
-    // Validar que los campos no estén vacíos
     if (!nombre.trim() || !descripcion.trim() || !precio.trim() || !imagen) {
       Alert.alert('Error', 'Por favor, complete todos los campos.');
       return;
@@ -21,13 +31,12 @@ const AgregarProducto = ({ navigation }) => {
     formData.append('descripcion', descripcion);
     formData.append('precio', parseFloat(precio));
     formData.append('imagen', {
-      uri: imagen.uri,
-      type: imagen.type,
-      name: imagen.fileName || 'image.jpg', // Establecer un nombre para la imagen
+      uri: imagen,
+      type: 'image/jpeg',
+      name: 'image.jpg',
     });
 
     try {
-      // Hacer una solicitud POST para agregar el producto
       const response = await axios.post('http://192.168.1.2:8080/api/productos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -36,28 +45,24 @@ const AgregarProducto = ({ navigation }) => {
 
       console.log('Producto agregado:', response.data);
       Alert.alert('Éxito', 'Producto agregado exitosamente');
-      navigation.goBack(); // Volver a la pantalla anterior
+      navigation.goBack();
     } catch (err) {
       console.error('Error agregando producto:', err);
       Alert.alert('Error', 'Hubo un problema al agregar el producto');
     }
   };
 
-  const selectImage = () => {
-    const options = {
-      mediaType: 'photo',
+  const selectImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
       quality: 1,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('Usuario canceló la selección de imagen');
-      } else if (response.error) {
-        console.error('Error al seleccionar la imagen:', response.error);
-      } else {
-        setImagen(response.assets[0]); // Almacenar la imagen seleccionada
-      }
     });
+
+    if (!result.canceled) {
+      setImagen(result.assets[0].uri);
+    }
   };
 
   return (
@@ -82,15 +87,13 @@ const AgregarProducto = ({ navigation }) => {
         keyboardType="numeric"
       />
 
-      {/* Botón personalizado para seleccionar la imagen */}
       <TouchableOpacity style={styles.button} onPress={selectImage}>
         <Text style={styles.buttonText}>Seleccionar Imagen</Text>
       </TouchableOpacity>
 
-      {/* Contenedor para mostrar la imagen seleccionada */}
       {imagen && (
         <View style={styles.imageContainer}>
-          <Image source={{ uri: imagen.uri }} style={styles.imagePreview} />
+          <Image source={{ uri: imagen }} style={styles.imagePreview} />
         </View>
       )}
 
@@ -114,14 +117,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    backgroundColor: '#007bff', // Color de fondo del botón
+    backgroundColor: '#007bff',
     padding: 12,
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 12,
   },
   buttonText: {
-    color: '#ffffff', // Color del texto del botón
+    color: '#ffffff',
     fontSize: 16,
   },
   imageContainer: {
@@ -133,8 +136,8 @@ const styles = StyleSheet.create({
   },
   imagePreview: {
     width: '100%',
-    height: 200, // Altura fija para la vista previa de la imagen
-    resizeMode: 'cover', // Ajustar la imagen al contenedor
+    height: 200,
+    resizeMode: 'cover',
   },
 });
 
