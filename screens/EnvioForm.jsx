@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { CountryPicker } from 'react-native-countries';
 
 const EnvioForm = () => {
   const [senderName, setSenderName] = useState('');
@@ -22,27 +21,12 @@ const EnvioForm = () => {
 
   const [recipientName, setRecipientName] = useState('');
   const [recipientCompany, setRecipientCompany] = useState('');
-  const [recipientCountry, setRecipientCountry] = useState('');
-  const [recipientRegion, setRecipientRegion] = useState('');
-  const [recipientCity, setRecipientCity] = useState('');
   const [recipientPostalCode, setRecipientPostalCode] = useState('');
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
 
-  // Handler for country change
-  const handleCountryChange = (country) => {
-    setRecipientCountry(country);
-    // Implement logic to update regions based on selected country
-  };
-
-  // Handler for region change
-  const handleRegionChange = (region) => {
-    setRecipientRegion(region);
-    // Implement logic to update cities based on selected region
-  };
-
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Datos del Remitente</Text>
       <TextInput
         style={styles.input}
@@ -73,6 +57,7 @@ const EnvioForm = () => {
         placeholder="Teléfono"
         value={senderPhone}
         onChangeText={setSenderPhone}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
@@ -118,21 +103,21 @@ const EnvioForm = () => {
       />
       <View style={styles.dimensionsContainer}>
         <TextInput
-          style={styles.input}
+          style={styles.inputDimension}
           placeholder="Largo (L)"
           value={length}
           onChangeText={setLength}
           keyboardType="numeric"
         />
         <TextInput
-          style={styles.input}
+          style={styles.inputDimension}
           placeholder="Ancho (A)"
           value={width}
           onChangeText={setWidth}
           keyboardType="numeric"
         />
         <TextInput
-          style={styles.input}
+          style={styles.inputDimension}
           placeholder="Alto (A)"
           value={height}
           onChangeText={setHeight}
@@ -153,30 +138,6 @@ const EnvioForm = () => {
         value={recipientCompany}
         onChangeText={setRecipientCompany}
       />
-      {/*
-      <CountryPicker
-        withFilter
-        withFlag
-        withCountryNameButton
-        withCallingCode
-        withCallingCodeButton
-        onSelect={handleCountryChange}
-        containerButtonStyle={styles.countryPicker}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Región"
-        value={recipientRegion}
-        onChangeText={handleRegionChange}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Ciudad"
-        value={recipientCity}
-        onChangeText={setRecipientCity}
-      />
-       */}
       <TextInput
         style={styles.input}
         placeholder="Código postal"
@@ -195,28 +156,45 @@ const EnvioForm = () => {
         placeholder="Número telefónico"
         value={recipientPhone}
         onChangeText={setRecipientPhone}
+        keyboardType="numeric"
       />
 
       <Button title="Enviar" onPress={() => console.log('Form submitted')} />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: '#f8f9fa',
+    flexGrow: 1,
   },
   header: {
-    fontSize: 18,
-    marginVertical: 8,
+    fontSize: 20,
+    marginVertical: 10,
     fontWeight: 'bold',
+    color: '#007bff',
   },
   input: {
-    height: 40,
+    height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
+    borderRadius: 8,
     marginVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  inputDimension: {
+    flex: 1,
+    height: 45,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    marginRight: 5,
   },
   picker: {
     height: 50,
@@ -226,11 +204,6 @@ const styles = StyleSheet.create({
   dimensionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  countryPicker: {
-    height: 50,
-    width: '100%',
-    marginVertical: 8,
   },
 });
 

@@ -5,7 +5,7 @@ interface UserContextType {
   userEmail: string | null;
   userRole: string | null;
   userName: string | null;
-  userToken: string | null; // Añadido para guardar el token
+  userToken: string | null; 
   setUser: (id?: string, email?: string, role?: string, name?: string, token?: string) => void;
   clearUser: () => void;
 }
@@ -20,11 +20,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userToken, setUserToken] = useState<string | null>(null); 
 
   const setUser = (id?: string | null, email?: string | null, role?: string | null, name?: string | null, token?: string | null) => {
-  if (id) setUserId(id); // Guardar el userId solo si no es null
-  if (email) setUserEmail(email); // Guardar el email solo si no es null
-  if (role) setUserRole(role); // Guardar el rol solo si no es null
-  if (name) setUserName(name); // Guardar el nombre solo si no es null
-  if (token) setUserToken(token); // Guardar el token solo si no es null
+  if (id) setUserId(id); 
+  if (email) setUserEmail(email); 
+  if (role) setUserRole(role); 
+  if (name) setUserName(name); 
+  if (token) setUserToken(token); 
 
   // Mostrar por consola los valores almacenados
   console.log('Token guardado:', token);
@@ -40,7 +40,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserEmail(null);
     setUserRole(null);
     setUserName(null);
-    setUserToken(null); // Limpiar el token
+    setUserToken(null); 
     console.log('Usuario limpiado');
   };
 

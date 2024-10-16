@@ -12,7 +12,7 @@ interface Props {
 }
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { userName } = useUserContext(); // Obtenemos el nombre del usuario
+  const { userName, userRole } = useUserContext(); 
 
   const handleLogout = async () => {
     try {
@@ -54,14 +54,14 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.menuItem}
           onPress={() => navigation.navigate('Productos')} 
         >
-          <MaterialIcons name="shopping-bag" size={30} color="#000" />
+          <MaterialIcons name="shopping-bag" size={35} color="#fff" />
           <Text style={styles.menuText}>Productos</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => navigation.navigate('EnvioForm')} 
         >
-          <MaterialIcons name="add-shopping-cart" size={30} color="#000" />
+          <MaterialIcons name="add-shopping-cart" size={35} color="#fff" />
           <Text style={styles.menuText}>Hacer pedido</Text>
         </TouchableOpacity>
       </View>
@@ -71,7 +71,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.menuItem}
           onPress={() => navigation.navigate('PedidosScreen')} 
         >
-          <MaterialIcons name="list-alt" size={30} color="#000" />
+          <MaterialIcons name="list-alt" size={35} color="#fff" />
           <Text style={styles.menuText}>Pedidos</Text>
         </TouchableOpacity>
         
@@ -79,17 +79,37 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.menuItem}
           //onPress={() => navigation.navigate('EditProfile')} 
         >
-          <MaterialIcons name="edit" size={30} color="#000" />
+          <MaterialIcons name="edit" size={35} color="#fff" />
           <Text style={styles.menuText}>Editar información personal</Text>
         </TouchableOpacity>
       </View>
 
+      {userRole === '1' && ( 
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.adminButton}
+            onPress={() => navigation.navigate('EditOrders')}
+          >
+            <MaterialIcons name="edit" size={35} color="#fff" />
+            <Text style={styles.adminText}>Editar pedidos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.adminButton}
+            //onPress={() => navigation.navigate('EditUsers')}
+          >
+            <MaterialIcons name="group" size={35} color="#fff" />
+            <Text style={styles.adminText}>Editar usuarios</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <TouchableOpacity
-        style={styles.menuItem}
+        style={styles.logoutButton}
         onPress={handleLogout} 
       >
-        <MaterialIcons name="logout" size={30} color="#000" />
-        <Text style={styles.menuText}>Cerrar sesión</Text>
+        <MaterialIcons name="logout" size={35} color="#fff" />
+        <Text style={styles.logoutText}>Cerrar sesión</Text>
       </TouchableOpacity>
     </View>
   );
@@ -101,27 +121,65 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#e9ecef', 
   },
   welcomeText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 30,
     textAlign: 'center',
+    color: '#343a40',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 25,
   },
   menuItem: {
     alignItems: 'center',
     flex: 1,
+    backgroundColor: '#007bff', 
+    paddingVertical: 20,
+    borderRadius: 15,
+    marginHorizontal: 10,
+    elevation: 5, 
   },
   menuText: {
-    fontSize: 18,
+    fontSize: 20,
     marginTop: 8,
     textAlign: 'center',
+    color: '#fff',
+  },
+  adminButton: {
+    alignItems: 'center',
+    backgroundColor: '#28a745', 
+    paddingVertical: 20,
+    flex: 1,
+    borderRadius: 15,
+    marginHorizontal: 10,
+    elevation: 5, 
+  },
+  adminText: {
+    fontSize: 20,
+    marginTop: 8,
+    textAlign: 'center',
+    color: '#fff',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#dc3545', 
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 30,
+    elevation: 5, 
+  },
+  logoutText: {
+    fontSize: 20,
+    marginLeft: 10,
+    color: '#fff',
   },
 });
 

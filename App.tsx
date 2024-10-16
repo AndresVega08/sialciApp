@@ -11,6 +11,8 @@ import PedidosScreen from './screens/PedidosScreen';
 import AgregarProducto from './screens/AgregarProducto';
 import DetallePedidoScreen from './screens/DetallePedidoScreen'; 
 import EditarProducto from './screens/EditarProducto';
+import EditOrders from './screens/EditOrder';
+import EditOrderScreen from './screens/EditOrderScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,14 +24,14 @@ export default function App() {
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
-            options={{ title: 'Login', headerShown: false }} // Ocultar el header en Login
+            options={{ title: 'Login', headerShown: false }} 
           />
           <Stack.Screen 
             name="HomeScreen" 
             component={HomeScreen} 
             options={{ 
               title: 'Home', 
-              headerLeft: () => null,  // Eliminar la flecha de retroceso
+              headerLeft: () => null, 
             }} 
           />
           <Stack.Screen 
@@ -58,7 +60,7 @@ export default function App() {
             options={{ title: 'Agregar Producto' }}
           />
           <Stack.Screen
-            name="DetallePedidoScreen" // Agregar la pantalla de detalles del pedido
+            name="DetallePedidoScreen"
             component={DetallePedidoScreen}
             options={{ title: 'Detalles del Pedido' }}
           />
@@ -66,6 +68,17 @@ export default function App() {
             name="EditarProducto"
             component={EditarProducto}
           />
+          <Stack.Screen
+            name="EditOrders"
+            component={EditOrders}
+            options={{ title: 'Editar Pedidos'}}
+          />
+          <Stack.Screen
+            name="EditOrderScreen"
+            component={EditOrderScreen}
+            options={{ title: 'Editar Pedido'}}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

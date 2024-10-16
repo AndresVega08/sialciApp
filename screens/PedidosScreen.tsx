@@ -69,7 +69,7 @@ const PedidosScreen: React.FC<Props> = ({ navigation }) => {
   }, [userEmail]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#007bff" style={styles.loadingIndicator} />;
   }
 
   if (noPedidos) {
@@ -90,43 +90,66 @@ const PedidosScreen: React.FC<Props> = ({ navigation }) => {
         data={pedidos}
         keyExtractor={(item) => item.idPedidos.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handlePedidoPress(item.numeroCuenta)}>
+          <TouchableOpacity onPress={() => handlePedidoPress(item.numeroCuenta)} activeOpacity={0.7}>
             <View style={styles.pedidoItem}>
-              <Text style={styles.pedidoText}>ID Pedido: {item.idPedidos}</Text>
-              <Text style={styles.pedidoText}>Correo: {item.correoUsua}</Text>
-              <Text style={styles.pedidoText}>Dirección: {item.direccionRemi}</Text>
-              <Text style={styles.pedidoText}>Teléfono: {item.telefonoRemi}</Text>
-              <Text style={styles.pedidoText}>Empresa: {item.nombreEmpresaRemi}</Text>
-              <Text style={styles.pedidoText}>ID Mercancía: {item.idMercancia}</Text>
-              <Text style={styles.pedidoText}>Fecha: {new Date(item.fecha).toLocaleString()}</Text>
+              <Text style={styles.pedidoText}>ID Pedido: <Text style={styles.boldText}>{item.idPedidos}</Text></Text>
+              <Text style={styles.pedidoText}>Número de cuenta: <Text style={styles.boldText}>{item.numeroCuenta}</Text></Text>
+              <Text style={styles.pedidoText}>Correo: <Text style={styles.boldText}>{item.correoUsua}</Text></Text>
+              <Text style={styles.pedidoText}>Dirección: <Text style={styles.boldText}>{item.direccionRemi}</Text></Text>
+              <Text style={styles.pedidoText}>Teléfono: <Text style={styles.boldText}>{item.telefonoRemi}</Text></Text>
+              <Text style={styles.pedidoText}>Empresa: <Text style={styles.boldText}>{item.nombreEmpresaRemi}</Text></Text>
+              <Text style={styles.pedidoText}>ID Mercancía: <Text style={styles.boldText}>{item.idMercancia}</Text></Text>
+              <Text style={styles.pedidoText}>Fecha: <Text style={styles.boldText}>{new Date(item.fecha).toLocaleString()}</Text></Text>
             </View>
           </TouchableOpacity>
         )}
+        contentContainerStyle={styles.listContent} 
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f8f9fa',
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pedidoItem: {
-    padding: 10,
+    padding: 15,
     borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    borderRadius: 5,
+    borderColor: '#007bff',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4, 
   },
   pedidoText: {
     fontSize: 16,
+    color: '#343a40',
+    marginVertical: 2, 
+  },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#495057', 
   },
   errorText: {
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+    fontSize: 18, 
+  },
+  listContent: {
+    paddingBottom: 20, 
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -17,9 +17,12 @@ interface Props {
 const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
   const { numeroCuenta } = route.params;
   const [envioInfo, setEnvioInfo] = useState<any>(null);
+  const [alertas, setAlertas] = useState<any[]>([]); // Nuevo estado para las alertas
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log(`Número de cuenta enviado para la consulta: ${numeroCuenta}`); // Mostrar número de cuenta en consola
+
     const fetchEnvioInfo = async () => {
       try {
         const response = await fetch(`http://192.168.1.2:8080/api/pedidos/envio/${numeroCuenta}`, {
@@ -30,12 +33,19 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
           credentials: 'include',
         });
 
+        console.log(`Respuesta del servidor: ${response.status}`); // Mostrar código de estado
+
         if (!response.ok) {
           throw new Error(`Error al cargar la información del envío: ${response.status}`);
         }
 
         const data = await response.json();
         setEnvioInfo(data);
+
+        // Verificar si hay alertas en la respuesta
+        if (data.alertas) {
+          setAlertas(data.alertas); // Guardar alertas en el estado
+        }
       } catch (error) {
         console.error('Error al recuperar información del envío:', error);
       } finally {
@@ -51,13 +61,27 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {envioInfo ? (
-        <Text>{JSON.stringify(envioInfo)}</Text> 
+        <>
+          <Text style={styles.title}>Información del Envío</Text>
+          <Text>{JSON.stringify(envioInfo, null, 2)}</Text>
+          
+          {alertas.length > 0 && (
+            <View style={styles.alertContainer}>
+              <Text style={styles.alertTitle}>Alertas:</Text>
+              {alertas.map((alerta, index) => (
+                <Text key={index} style={styles.alertText}>
+                  {alerta.message} (Código: {alerta.code}, Tipo: {alerta.alertType})
+                </Text>
+              ))}
+            </View>
+          )}
+        </>
       ) : (
         <Text>No se encontró información del envío.</Text>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -65,6 +89,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  alertContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  alertTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  alertText: {
+    fontSize: 16,
+    color: 'orange',
   },
 });
 
