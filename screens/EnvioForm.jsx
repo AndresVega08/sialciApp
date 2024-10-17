@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
 
 const EnvioForm = () => {
   const [senderName, setSenderName] = useState('');
@@ -24,6 +25,116 @@ const EnvioForm = () => {
   const [recipientPostalCode, setRecipientPostalCode] = useState('');
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
+
+  const [countries, setCountries] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [recipientCountry, setRecipientCountry] = useState('');
+  const [recipientDepartment, setRecipientDepartment] = useState('');
+  const [recipientCity, setRecipientCity] = useState('');
+
+  const API_URL_COUNTRIES = 'https://www.universal-tutorial.com/api/countries/';
+  const API_URL_DEPARTMENTS = 'https://www.universal-tutorial.com/api/states/';
+  const API_URL_CITIES = 'https://www.universal-tutorial.com/api/cities/';
+  const API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJhbmRyZXNfdmVnYXBlQGZldC5lZHUuY28iLCJhcGlfdG9rZW4iOiJGMTBTX1Jla3NsanVGN2pCLTZoS1JjS0UwTWk0YW9JRWdEdnhfTGlpV0gxRGpCY0lsUWN0QTdLU3ZYeU5SSFc4MHVZIn0sImV4cCI6MTcyOTIwMjkwNn0.xHBLraJit715Zojhtqy-q86iReqTO6DzNgBCBBqTxYc';
+
+  // Cargar países
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(API_URL_COUNTRIES, {
+          headers: {
+            'Authorization': `Bearer ${API_TOKEN}`,
+            'Accept': 'application/json'
+          }
+        });
+        setCountries(response.data);
+      } catch (error) {
+        console.error('Error al obtener países:', error.response ? error.response.data : error.message);
+        Alert.alert('Error', 'No se pudieron obtener los países. Verifica tu conexión y credenciales.');
+      }
+    };
+    
+    fetchCountries();
+  }, []);
+
+  const handleCountryChange = async (countryName) => {
+    setRecipientCountry(countryName);
+    try {
+      const response = await axios.get(`${API_URL_DEPARTMENTS}${countryName}`, {
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`,
+          "Accept": "application/json"
+        }
+      });
+      setDepartments(response.data);
+      setRecipientDepartment('');
+      setCities([]);
+      setRecipientCity('');
+    } catch (error) {
+      console.error('Error al obtener departamentos:', error);
+      Alert.alert('Error', 'No se pudieron obtener los departamentos.');
+    }
+  };
+
+  // Cargar ciudades según el departamento
+  const handleDepartmentChange = async (departmentName) => {
+    setRecipientDepartment(departmentName);
+    try {
+      const response = await axios.get(`${API_URL_CITIES}${departmentName}`, {
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`,
+          "Accept": "application/json"
+        }
+      });
+      setCities(response.data);
+      setRecipientCity('');
+    } catch (error) {
+      console.error('Error al obtener ciudades:', error);
+      Alert.alert('Error', 'No se pudieron obtener las ciudades.');
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const requestData = {
+        senderName,
+        senderLastName,
+        senderAddress,
+        senderEmail,
+        senderPhone: parseInt(senderPhone),
+        senderCompany,
+        packages: parseInt(packages),
+        packageDescription,
+        weight: parseFloat(weight),
+        weightUnit,
+        value: parseFloat(value),
+        length: parseFloat(length),
+        width: parseFloat(width),
+        height: parseFloat(height),
+        recipientName,
+        recipientCompany,
+        recipientCountry,
+        recipientDepartment,
+        recipientCity,
+        recipientPostalCode: parseInt(recipientPostalCode),
+        recipientEmail,
+        recipientPhone: parseInt(recipientPhone),
+        accountNumber: '',
+      };
+  
+      // Mostrar los datos por consola antes de enviarlos
+      console.log('Datos enviados al backend:', requestData);
+  
+      const response = await axios.post('http://192.168.1.2:8080/api/envio', requestData);
+      Alert.alert('Éxito', response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema al enviar los datos. Inténtalo de nuevo.');
+      console.error('Error al enviar los datos:', error);
+    }
+  };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -72,6 +183,7 @@ const EnvioForm = () => {
         placeholder="Paquetes"
         value={packages}
         onChangeText={setPackages}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
@@ -153,57 +265,83 @@ const EnvioForm = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Número telefónico"
+        placeholder="Teléfono"
         value={recipientPhone}
         onChangeText={setRecipientPhone}
         keyboardType="numeric"
       />
 
-      <Button title="Enviar" onPress={() => console.log('Form submitted')} />
+      <Picker
+        selectedValue={recipientCountry}
+        style={styles.picker}
+        onValueChange={(itemValue) => handleCountryChange(itemValue)}
+      >
+        <Picker.Item label="Selecciona un país" value="" />
+        {countries.map((country, index) => (
+          <Picker.Item key={index} label={country.country_name} value={country.country_name} /> 
+        ))}
+      </Picker>
+
+      <Picker
+        selectedValue={recipientDepartment}
+        style={styles.picker}
+        onValueChange={(itemValue) => handleDepartmentChange(itemValue)}
+      >
+        <Picker.Item label="Selecciona un departamento" value="" />
+        {departments.map((department, index) => (
+          <Picker.Item key={index} label={department.state_name} value={department.state_name} /> 
+        ))}
+      </Picker>
+
+      <Picker
+        selectedValue={recipientCity}
+        style={styles.picker}
+        onValueChange={(itemValue) => setRecipientCity(itemValue)}
+      >
+        <Picker.Item label="Selecciona una ciudad" value="" />
+        {cities.map((city, index) => (
+          <Picker.Item key={index} label={city.city_name} value={city.city_name} /> 
+        ))}
+      </Picker>
+
+      <Button title="Enviar" onPress={handleSubmit} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    flexGrow: 1,
+    padding: 20,
   },
   header: {
     fontSize: 20,
-    marginVertical: 10,
     fontWeight: 'bold',
-    color: '#007bff',
+    marginBottom: 10,
   },
   input: {
-    height: 45,
-    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
-    marginVertical: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   },
   inputDimension: {
-    flex: 1,
-    height: 45,
-    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
-    marginVertical: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    flex: 1,
     marginRight: 5,
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    marginVertical: 8,
   },
   dimensionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginBottom: 10,
   },
 });
 

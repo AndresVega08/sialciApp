@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 const EditOrderScreen = ({ route, navigation }) => {
-  const { order } = route.params; // Obtener el pedido desde los parámetros de navegación
+  const { order } = route.params; 
 
   const [nombreEmpresaRemi, setNombreEmpresaRemi] = useState(order.nombreEmpresaRemi);
   const [direccionRemi, setDireccionRemi] = useState(order.direccionRemi);
-  const [telefonoRemi, setTelefonoRemi] = useState(order.telefonoRemi.toString());
-  const [numeroCuenta, setNumeroCuenta] = useState(order.numeroCuenta.toString());
+  const [telefonoRemi, setTelefonoRemi] = useState(order.telefonoRemi ? order.telefonoRemi.toString() : '');
+  const [numeroCuenta, setNumeroCuenta] = useState(order.numeroCuenta ? order.numeroCuenta.toString() : '');
 
   const handleUpdateOrder = async () => {
     try {
@@ -20,7 +20,7 @@ const EditOrderScreen = ({ route, navigation }) => {
           nombreEmpresaRemi,
           direccionRemi,
           telefonoRemi: parseInt(telefonoRemi),
-          numeroCuenta: parseInt(numeroCuenta),
+          numeroCuenta: numeroCuenta ? parseInt(numeroCuenta) : null,
         }),
       });
 
@@ -39,6 +39,10 @@ const EditOrderScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Editar Pedido</Text>
+
+      {/* Mostrar datos del pedido */}
+      <Text style={styles.label}>ID del Pedido:</Text>
+      <Text style={styles.data}>{order.idPedidos}</Text>
 
       <Text style={styles.label}>Nombre de la Empresa:</Text>
       <TextInput
@@ -94,6 +98,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     color: '#495057',
+  },
+  data: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#212529',
+    padding: 10,
+    backgroundColor: '#e9ecef',
+    borderRadius: 5,
   },
   input: {
     height: 45,
