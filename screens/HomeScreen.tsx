@@ -36,12 +36,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         },
         { text: 'Salir', onPress: () => BackHandler.exitApp() },
       ]);
-      return true; // Para evitar que la acción de retroceso predeterminada se ejecute
+      return true; 
     };
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    return () => backHandler.remove(); // Limpieza del listener al desmontar el componente
+    return () => backHandler.remove(); 
   }, []);
 
   return (
@@ -77,7 +77,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         
         <TouchableOpacity
           style={styles.menuItem}
-          //onPress={() => navigation.navigate('EditProfile')} 
+          onPress={() => navigation.navigate('EditProfile')} 
         >
           <MaterialIcons name="edit" size={35} color="#fff" />
           <Text style={styles.menuText}>Editar información personal</Text>

@@ -55,7 +55,7 @@ const EditOrders = ({ navigation }) => {
 
   // Navegar a la pantalla de edición
   const handleEditOrder = (order) => {
-    navigation.navigate('EditOrderScreen', { order }); // Redirigir a la nueva pantalla para editar
+    navigation.navigate('EditOrderScreen', { order }); 
   };
 
   const renderItem = ({ item }) => {

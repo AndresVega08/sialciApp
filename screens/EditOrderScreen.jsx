@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 
 const EditOrderScreen = ({ route, navigation }) => {
   const { order } = route.params; 
@@ -10,24 +10,31 @@ const EditOrderScreen = ({ route, navigation }) => {
   const [numeroCuenta, setNumeroCuenta] = useState(order.numeroCuenta ? order.numeroCuenta.toString() : '');
 
   const handleUpdateOrder = async () => {
+    const dataToSend = {
+      nombreEmpresaRemi,
+      direccionRemi,
+      telefonoRemi: parseInt(telefonoRemi),
+      numeroCuenta: numeroCuenta ? parseInt(numeroCuenta) : null,
+      correoUsua: order.correoUsua, 
+      fecha: order.fecha, 
+      idMercancia: order.idMercancia,
+    };
+  
+    console.log("Datos que se envían al backend:", dataToSend); // Mostrar los datos en la consola
+  
     try {
       const response = await fetch(`http://192.168.1.2:8080/api/pedidos/${order.idPedidos}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          nombreEmpresaRemi,
-          direccionRemi,
-          telefonoRemi: parseInt(telefonoRemi),
-          numeroCuenta: numeroCuenta ? parseInt(numeroCuenta) : null,
-        }),
+        body: JSON.stringify(dataToSend),
       });
-
+  
       if (!response.ok) {
         throw new Error('Error al actualizar el pedido');
       }
-
+  
       Alert.alert('Éxito', 'Pedido actualizado correctamente');
       navigation.goBack(); // Volver a la pantalla anterior después de actualizar
     } catch (error) {
@@ -35,53 +42,63 @@ const EditOrderScreen = ({ route, navigation }) => {
       Alert.alert('Error', 'No se pudo actualizar el pedido');
     }
   };
+  
+  
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Editar Pedido</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Editar Pedido</Text>
 
-      {/* Mostrar datos del pedido */}
-      <Text style={styles.label}>ID del Pedido:</Text>
-      <Text style={styles.data}>{order.idPedidos}</Text>
+        {/* Mostrar datos del pedido */}
+        <Text style={styles.label}>ID del Pedido:</Text>
+        <Text style={styles.data}>{order.idPedidos}</Text>
 
-      <Text style={styles.label}>Nombre de la Empresa:</Text>
-      <TextInput
-        style={styles.input}
-        value={nombreEmpresaRemi}
-        onChangeText={setNombreEmpresaRemi}
-      />
+        <Text style={styles.label}>Correo del Usuario:</Text>
+        <Text style={styles.data}>{order.correoUsua}</Text>
 
-      <Text style={styles.label}>Dirección del Remitente:</Text>
-      <TextInput
-        style={styles.input}
-        value={direccionRemi}
-        onChangeText={setDireccionRemi}
-      />
+        <Text style={styles.label}>Nombre de la Empresa:</Text>
+        <TextInput
+          style={styles.input}
+          value={nombreEmpresaRemi}
+          onChangeText={setNombreEmpresaRemi}
+        />
 
-      <Text style={styles.label}>Teléfono del Remitente:</Text>
-      <TextInput
-        style={styles.input}
-        value={telefonoRemi}
-        onChangeText={setTelefonoRemi}
-        keyboardType="numeric"
-      />
+        <Text style={styles.label}>Dirección del Remitente:</Text>
+        <TextInput
+          style={styles.input}
+          value={direccionRemi}
+          onChangeText={setDireccionRemi}
+        />
 
-      <Text style={styles.label}>Número de Cuenta:</Text>
-      <TextInput
-        style={styles.input}
-        value={numeroCuenta}
-        onChangeText={setNumeroCuenta}
-        keyboardType="numeric"
-      />
+        <Text style={styles.label}>Teléfono del Remitente:</Text>
+        <TextInput
+          style={styles.input}
+          value={telefonoRemi}
+          onChangeText={setTelefonoRemi}
+          keyboardType="numeric"
+        />
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleUpdateOrder}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.label}>Número de Cuenta:</Text>
+        <TextInput
+          style={styles.input}
+          value={numeroCuenta}
+          onChangeText={setNumeroCuenta}
+          keyboardType="numeric"
+        />
+
+        <TouchableOpacity style={styles.saveButton} onPress={handleUpdateOrder}>
+          <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     padding: 20,
