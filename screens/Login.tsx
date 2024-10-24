@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Text } fro
 import { login, logout } from '../api/api'; 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useUserContext } from '../context/UserContext'; 
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 type RootStackParamList = {
   Login: undefined;
@@ -19,6 +20,7 @@ type Props = {
 const LoginScreen = ({ navigation }: Props) => {
   const [correo_Usua, setCorreo_Usua] = useState(''); 
   const [password_Usua, setPassword_Usua] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
   const { setUser } = useUserContext();
 
   const handleLogin = async () => {
@@ -79,13 +81,18 @@ const LoginScreen = ({ navigation }: Props) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password_Usua}
-        onChangeText={setPassword_Usua}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Contraseña"
+          secureTextEntry={!showPassword}
+          value={password_Usua}
+          onChangeText={setPassword_Usua}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+          <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#495057" />
+        </TouchableOpacity>
+      </View>
       
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar sesión</Text>
@@ -143,6 +150,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
     elevation: 2,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    elevation: 2,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+  },
+  eyeIcon: {
+    marginLeft: -10, 
+    justifyContent: 'center',
+    paddingHorizontal: 10,
   },
   button: {
     backgroundColor: '#007bff',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,8 @@ const RegisterScreen = ({ navigation }: any) => {
   const [confirmPassword, setConfirmPassword] = useState(''); 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -62,20 +65,30 @@ const RegisterScreen = ({ navigation }: any) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Repetir contraseña"
-        secureTextEntry
-        value={confirmPassword} 
-        onChangeText={setConfirmPassword} 
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Contraseña"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+          <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#495057" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Repetir contraseña"
+          secureTextEntry={!showConfirmPassword}
+          value={confirmPassword} 
+          onChangeText={setConfirmPassword} 
+        />
+        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+          <Icon name={showConfirmPassword ? 'eye' : 'eye-slash'} size={20} color="#495057" />
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Nombre completo"
@@ -119,6 +132,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontSize: 16,
     color: '#333',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+  },
+  passwordInput: {
+    flex: 1,
+    height: 48,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  eyeIcon: {
+    justifyContent: 'center',
+    paddingHorizontal: 10,
   },
   button: {
     backgroundColor: '#007bff',
