@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 
 const RegisterScreen = ({ navigation }: any) => {
@@ -10,20 +10,17 @@ const RegisterScreen = ({ navigation }: any) => {
   const [surname, setSurname] = useState('');
 
   const handleRegister = async () => {
-    // Verificar si las contraseñas coinciden
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
 
-    // Validar el correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('Error', 'Por favor, ingrese un correo electrónico válido');
       return;
     }
 
-    // Validar la contraseña
     const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
     if (!passwordRegex.test(password)) {
       Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres y una letra mayúscula');
@@ -62,6 +59,8 @@ const RegisterScreen = ({ navigation }: any) => {
         placeholder="Correo electrónico"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -89,7 +88,9 @@ const RegisterScreen = ({ navigation }: any) => {
         value={surname}
         onChangeText={setSurname}
       />
-      <Button title="Registrarse" onPress={handleRegister} />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Registrarse</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -98,19 +99,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
   },
   header: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 24,
     textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    height: 48,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    borderRadius: 8,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    fontSize: 16,
+    color: '#333',
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

@@ -96,7 +96,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.adminButton}
-            //onPress={() => navigation.navigate('EditUsers')}
+            onPress={() => navigation.navigate('EditUsers')}
           >
             <MaterialIcons name="group" size={35} color="#fff" />
             <Text style={styles.adminText}>Editar usuarios</Text>

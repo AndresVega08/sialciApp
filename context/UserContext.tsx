@@ -31,6 +31,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   console.log('Nombre guardado:', name);
   console.log('Rol guardado:', role);
   console.log('Correo guardado:', email);
+  console.log('Id guardado:', id);
 };
 
 

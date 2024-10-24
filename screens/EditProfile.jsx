@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { useUserContext } from '../context/UserContext';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Asegúrate de tener esta librería instalada
 
 const EditProfile = ({ navigation }) => {
   const { userEmail, userId } = useUserContext(); 
@@ -8,7 +9,9 @@ const EditProfile = ({ navigation }) => {
   const [nombreUsua, setNombreUsua] = useState('');
   const [apellidosUsua, setApellidosUsua] = useState('');
   const [correoUsua, setCorreoUsua] = useState(userEmail || '');
-
+  const [passwordUsua, setPasswordUsua] = useState('');
+  const [rol, setRol] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Estado para controlar la visibilidad de la contraseña
 
   const fetchUserData = async () => {
     setLoading(true);
@@ -21,6 +24,9 @@ const EditProfile = ({ navigation }) => {
       const userData = await response.json();
       setNombreUsua(userData.nombreUsua);
       setApellidosUsua(userData.apellidosUsua);
+      setCorreoUsua(userData.correoUsua);
+      setPasswordUsua(userData.passwordUsua); // Si necesitas mostrarlo
+      setRol(userData.rol); // Si necesitas mostrarlo
     } catch (error) {
       console.error('Error al obtener datos del usuario:', error);
       Alert.alert('Error', 'No se pudo cargar los datos del usuario');
@@ -29,9 +35,8 @@ const EditProfile = ({ navigation }) => {
     }
   };
 
-  // Función para actualizar los datos del usuario
   const handleUpdateUser = async () => {
-    if (!nombreUsua || !apellidosUsua) {
+    if (!nombreUsua || !apellidosUsua || !correoUsua || !passwordUsua) {
       Alert.alert('Error', 'Por favor, complete todos los campos.');
       return;
     }
@@ -40,6 +45,8 @@ const EditProfile = ({ navigation }) => {
       nombreUsua,
       apellidosUsua,
       correoUsua,
+      passwordUsua, // Asegúrate de enviar la contraseña si es necesaria
+      rol,
     };
 
     try {
@@ -56,19 +63,17 @@ const EditProfile = ({ navigation }) => {
       }
 
       Alert.alert('Éxito', 'Usuario actualizado correctamente');
-      navigation.goBack(); // Volver a la pantalla anterior después de actualizar
+      navigation.goBack(); 
     } catch (error) {
       console.error('Error al actualizar usuario:', error);
       Alert.alert('Error', 'No se pudo actualizar el usuario');
     }
   };
 
-  // Efecto para cargar los datos al iniciar
   useEffect(() => {
-    fetchUserData(); // Llamar a la función para cargar los datos del usuario
+    fetchUserData(); 
   }, []);
 
-  // Mostrar un indicador de carga mientras se obtienen los datos
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -100,6 +105,26 @@ const EditProfile = ({ navigation }) => {
           style={styles.input}
           value={apellidosUsua}
           onChangeText={setApellidosUsua}
+        />
+
+        <Text style={styles.label}>Contraseña:</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            value={passwordUsua}
+            onChangeText={setPasswordUsua}
+            secureTextEntry={!showPassword} // Cambia según el estado
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconButton}>
+            <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#495057" />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Rol:</Text>
+        <TextInput
+          style={[styles.input, { backgroundColor: '#e9ecef' }]} // Cambia el fondo para indicar que está deshabilitado
+          value={rol}
+          editable={false} // Habilitar solo lectura
         />
 
         <TouchableOpacity style={styles.saveButton} onPress={handleUpdateUser}>
@@ -157,6 +182,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 3,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    height: 45,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 15,
+    fontSize: 16,
+  },
+  iconButton: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   saveButton: {
     backgroundColor: '#28a745',

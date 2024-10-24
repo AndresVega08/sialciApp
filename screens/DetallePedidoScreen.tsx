@@ -17,11 +17,11 @@ interface Props {
 const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
   const { numeroCuenta } = route.params;
   const [envioInfo, setEnvioInfo] = useState<any>(null);
-  const [alertas, setAlertas] = useState<any[]>([]); // Nuevo estado para las alertas
+  const [alertas, setAlertas] = useState<any[]>([]); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(`Número de cuenta enviado para la consulta: ${numeroCuenta}`); // Mostrar número de cuenta en consola
+    console.log(`Número de cuenta enviado para la consulta: ${numeroCuenta}`); 
 
     const fetchEnvioInfo = async () => {
       try {
@@ -33,7 +33,7 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
           credentials: 'include',
         });
 
-        console.log(`Respuesta del servidor: ${response.status}`); // Mostrar código de estado
+        console.log(`Respuesta del servidor: ${response.status}`); 
 
         if (!response.ok) {
           throw new Error(`Error al cargar la información del envío: ${response.status}`);
@@ -44,7 +44,7 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
 
         // Verificar si hay alertas en la respuesta
         if (data.alertas) {
-          setAlertas(data.alertas); // Guardar alertas en el estado
+          setAlertas(data.alertas); 
         }
       } catch (error) {
         console.error('Error al recuperar información del envío:', error);

@@ -23,81 +23,79 @@ const LoginScreen = ({ navigation }: Props) => {
 
   const handleLogin = async () => {
     if (!correo_Usua.trim() || !password_Usua.trim()) {
-        Alert.alert('Error', 'Por favor, complete ambos campos.');
-        return;
+      Alert.alert('Error', 'Por favor, complete ambos campos.');
+      return;
     }
 
     try {
-        const response = await login(correo_Usua, password_Usua);
-        console.log('Login response:', response);
+      const response = await login(correo_Usua, password_Usua);
+      console.log('Login response:', response);
 
-        if (response.status === 200) {
-            const { access_token, rol, nombre } = response.data; 
-            setUser(null, correo_Usua, rol, nombre, access_token); 
-            
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'HomeScreen' }],
-            });
-        } else {
-            Alert.alert('Error', 'Credenciales inválidas');
-        }
+      if (response.status === 200) {
+        const { access_token, rol, nombre, id } = response.data;  
+        setUser(id, correo_Usua, rol, nombre, access_token);  
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeScreen' }],
+        });
+      } else {
+        Alert.alert('Error', 'Credenciales inválidas');
+      }
     } catch (err: any) {
-        console.error('Error en el login:', err);
-        if (err.response) {
-            Alert.alert('Error', err.response.data.error || 'Credenciales incorrectas');
-        } else if (err.request) {
-            Alert.alert('Error', 'No se recibió respuesta del servidor');
-        } else {
-            Alert.alert('Error', 'Ocurrió un error inesperado');
-        }
+      console.error('Error en el login:', err);
+      if (err.response) {
+        Alert.alert('Error', err.response.data.error || 'Credenciales incorrectas');
+      } else if (err.request) {
+        Alert.alert('Error', 'No se recibió respuesta del servidor');
+      } else {
+        Alert.alert('Error', 'Ocurrió un error inesperado');
+      }
     }
-};
+  };
 
-const handleLogout = async () => {
-  try {
-    await logout();
-    Alert.alert('Éxito', 'Sesión cerrada');
-    navigation.navigate('Login');
-  } catch (err) {
-    console.error('Error cerrando sesión:', err);
-    Alert.alert('Error', 'Hubo un problema cerrando sesión');
-  }
-};
+  const handleLogout = async () => {
+    try {
+      await logout();
+      Alert.alert('Éxito', 'Sesión cerrada');
+      navigation.navigate('Login');
+    } catch (err) {
+      console.error('Error cerrando sesión:', err);
+      Alert.alert('Error', 'Hubo un problema cerrando sesión');
+    }
+  };
   
-return (
-  <View style={styles.container}>
-    <Image source={require('../assets/logo.png')} style={styles.logo} />
-    
-    <Text style={styles.header}>Inicio de sesión</Text>
-    
-    <TextInput
-      style={styles.input}
-      placeholder="Correo"
-      value={correo_Usua}
-      onChangeText={setCorreo_Usua}
-      keyboardType="email-address"
-      autoCapitalize="none"
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Contraseña"
-      secureTextEntry
-      value={password_Usua}
-      onChangeText={setPassword_Usua}
-    />
-    
-    {/* Botón de Login */}
-    <TouchableOpacity style={styles.button} onPress={handleLogin}>
-      <Text style={styles.buttonText}>Iniciar sesión</Text>
-    </TouchableOpacity>
+  return (
+    <View style={styles.container}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+      
+      <Text style={styles.header}>Inicio de sesión</Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Correo"
+        value={correo_Usua}
+        onChangeText={setCorreo_Usua}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        secureTextEntry
+        value={password_Usua}
+        onChangeText={setPassword_Usua}
+      />
+      
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Iniciar sesión</Text>
+      </TouchableOpacity>
 
-    {/* Botón de Registro */}
-    <TouchableOpacity style={[styles.button, { backgroundColor: 'gray' }]} onPress={() => navigation.navigate('Register')}>
-      <Text style={styles.buttonText}>Registrarse</Text>
-    </TouchableOpacity>
-  </View>
-);
+      <TouchableOpacity style={[styles.button, { backgroundColor: 'gray' }]} onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.buttonText}>Registrarse</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -121,13 +119,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, 
     shadowRadius: 4.65, 
     elevation: 8, 
-  
   },
   header: {
     fontSize: 26,
     marginBottom: 24,
     textAlign: 'center',
-    fontFamily: 'Open Sans', // Asegúrate de que esta fuente esté disponible
+    fontFamily: 'Open Sans', 
     fontWeight: 'bold',
   },
   input: {
@@ -152,20 +149,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     marginTop: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2.5,
-    elevation: 2,
   },
   buttonText: {
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 16,
   },
 });
 

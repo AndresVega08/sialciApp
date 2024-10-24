@@ -14,6 +14,8 @@ import EditarProducto from './screens/EditarProducto';
 import EditOrders from './screens/EditOrder';
 import EditOrderScreen from './screens/EditOrderScreen';
 import EditProfile from './screens/EditProfile';
+import EditUsers from './screens/EditUsers';
+import UserDetail from './screens/UserDetail';
 
 
 const Stack = createStackNavigator();
@@ -84,6 +86,16 @@ export default function App() {
             name="EditProfile"
             component={EditProfile}
             options={{ title: 'Editar Usuarios'}}
+          />
+          <Stack.Screen
+            name="EditUsers"
+            component={EditUsers}
+            options={{ title: 'Editar Usuarios'}}
+          />
+          <Stack.Screen
+            name="UserDetail"
+            component={UserDetail}
+            options={{ title: 'Detalles de Usuario'}}
           />
 
         </Stack.Navigator>
