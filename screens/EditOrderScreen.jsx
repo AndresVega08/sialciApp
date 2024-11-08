@@ -1,49 +1,53 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // Importamos Picker
 
 const EditOrderScreen = ({ route, navigation }) => {
-  const { order } = route.params; 
+  const { order } = route.params;
 
   const [nombreEmpresaRemi, setNombreEmpresaRemi] = useState(order.nombreEmpresaRemi);
   const [direccionRemi, setDireccionRemi] = useState(order.direccionRemi);
   const [telefonoRemi, setTelefonoRemi] = useState(order.telefonoRemi ? order.telefonoRemi.toString() : '');
   const [numeroCuenta, setNumeroCuenta] = useState(order.numeroCuenta ? order.numeroCuenta.toString() : '');
+  
+  const [ubicacion, setUbicacion] = useState(order.ubicacion || ''); 
+  const [estado, setEstado] = useState(order.estado || '');  // Verifica si el estado está inicializado correctamente
 
   const handleUpdateOrder = async () => {
     const dataToSend = {
-      nombreEmpresaRemi,
-      direccionRemi,
-      telefonoRemi: parseInt(telefonoRemi),
-      numeroCuenta: numeroCuenta ? parseInt(numeroCuenta) : null,
       correoUsua: order.correoUsua, 
+      direccionRemi,
+      estado,  // Estado actualizado
       fecha: order.fecha, 
       idMercancia: order.idMercancia,
+      nombreEmpresaRemi,
+      numeroCuenta: numeroCuenta ? parseInt(numeroCuenta) : null,
+      telefonoRemi: telefonoRemi ? parseInt(telefonoRemi) : null,
+      ubicacion,  // Ubicación actualizada
     };
-  
-    console.log("Datos que se envían al backend:", dataToSend); // Mostrar los datos en la consola
-  
+
+    console.log("Datos que se envían al backend:", dataToSend);
+
     try {
       const response = await fetch(`http://192.168.1.2:8080/api/pedidos/${order.idPedidos}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(dataToSend), 
       });
-  
+
       if (!response.ok) {
         throw new Error('Error al actualizar el pedido');
       }
-  
+
       Alert.alert('Éxito', 'Pedido actualizado correctamente');
-      navigation.goBack(); // Volver a la pantalla anterior después de actualizar
+      navigation.goBack();
     } catch (error) {
       console.error('Error al actualizar pedido:', error);
       Alert.alert('Error', 'No se pudo actualizar el pedido');
     }
   };
-  
-  
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -86,6 +90,27 @@ const EditOrderScreen = ({ route, navigation }) => {
           onChangeText={setNumeroCuenta}
           keyboardType="numeric"
         />
+
+        {/* Nuevos campos: Ubicación y Estado */}
+        <Text style={styles.label}>Ubicación:</Text>
+        <TextInput
+          style={styles.input}
+          value={ubicacion}
+          onChangeText={setUbicacion}
+        />
+
+        <Text style={styles.label}>Estado:</Text>
+        <Picker
+          selectedValue={estado}
+          onValueChange={(itemValue) => setEstado(itemValue)}  // Actualizamos el estado seleccionado
+          style={styles.picker}
+        >
+          <Picker.Item label="Pedido recibido" value="Pedido recibido" />
+          <Picker.Item label="En proceso" value="En proceso" />
+          <Picker.Item label="En tránsito" value="En tránsito" />
+          <Picker.Item label="En destino" value="En destino" />
+          <Picker.Item label="Entregado" value="Entregado" />
+        </Picker>
 
         <TouchableOpacity style={styles.saveButton} onPress={handleUpdateOrder}>
           <Text style={styles.saveButtonText}>Guardar Cambios</Text>
@@ -138,6 +163,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 3,
+  },
+  picker: {
+    height: 45,
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    backgroundColor: '#fff',
   },
   saveButton: {
     backgroundColor: '#28a745',

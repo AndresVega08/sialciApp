@@ -16,16 +16,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      // Lógica para cerrar sesión
       Alert.alert('Éxito', 'Sesión cerrada');
-      navigation.navigate('Login'); // Navegar a la pantalla de inicio de sesión
+      navigation.navigate('Login'); 
     } catch (err) {
       console.error('Error cerrando sesión:', err);
       Alert.alert('Error', 'Hubo un problema cerrando sesión');
     }
   };
 
-  // Lógica para confirmar si el usuario quiere salir de la aplicación
+
   useEffect(() => {
     const backAction = () => {
       Alert.alert('Confirmar salida', '¿Estás seguro de que deseas salir de la aplicación?', [
@@ -46,7 +45,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Mensaje de bienvenida */}
+
       <Text style={styles.welcomeText}>Bienvenido {userName}</Text>
 
       <View style={styles.row}>

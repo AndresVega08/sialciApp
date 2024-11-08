@@ -53,7 +53,6 @@ const EditOrders = ({ navigation }) => {
     }
   };
 
-  // Navegar a la pantalla de edición
   const handleEditOrder = (order) => {
     navigation.navigate('EditOrderScreen', { order }); 
   };

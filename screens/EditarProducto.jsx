@@ -20,7 +20,7 @@ const EditarProducto = ({ route, navigation }) => {
             setLoading(true); // Indicar que se está cargando
             try {
                 const response = await axios.get(`http://192.168.1.2:8080/api/productos/${id}`);
-                console.log('Datos del producto:', response.data); // Para depurar
+                console.log('Datos del producto:', response.data); 
                 setProducto({
                     nombre: response.data.nombre,
                     descripcion: response.data.descripcion,
