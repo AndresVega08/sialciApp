@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity, Text } from 'react-native';
-import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
+import apiClient from '../api/apiClient';
 
 const AgregarProducto = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
@@ -37,7 +37,7 @@ const AgregarProducto = ({ navigation }) => {
     });
 
     try {
-      const response = await axios.post('http://192.168.1.2:8080/api/productos', formData, {
+      const response = await apiClient.post('/productos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -47,8 +47,8 @@ const AgregarProducto = ({ navigation }) => {
       Alert.alert('Éxito', 'Producto agregado exitosamente');
       navigation.goBack();
     } catch (err) {
-      console.error('Error agregando producto:', err);
-      Alert.alert('Error', 'Hubo un problema al agregar el producto');
+      console.error('Error agregando producto:', err.response);
+      
     }
   };
 

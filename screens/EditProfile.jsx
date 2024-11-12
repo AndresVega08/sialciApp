@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { useUserContext } from '../context/UserContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Asegúrate de tener esta librería instalada
+import apiClient from '../api/apiClient';
 
 const EditProfile = ({ navigation }) => {
   const { userEmail, userId } = useUserContext(); 
@@ -17,16 +18,14 @@ const EditProfile = ({ navigation }) => {
     setLoading(true);
     console.log('ID del usuario que inició sesión:', userId); 
     try {
-      const response = await fetch(`http://192.168.1.2:8080/api/usuarios/${userId}`); 
-      if (!response.ok) {
-        throw new Error('Error al cargar los datos del usuario');
-      }
-      const userData = await response.json();
+      const response = await apiClient.get(`/usuarios/${userId}`); 
+      const userData = response.data;
       setNombreUsua(userData.nombreUsua);
       setApellidosUsua(userData.apellidosUsua);
       setCorreoUsua(userData.correoUsua);
       setPasswordUsua(userData.passwordUsua); // Si necesitas mostrarlo
       setRol(userData.rol); // Si necesitas mostrarlo
+
     } catch (error) {
       console.error('Error al obtener datos del usuario:', error);
       Alert.alert('Error', 'No se pudo cargar los datos del usuario');
@@ -50,18 +49,7 @@ const EditProfile = ({ navigation }) => {
     };
 
     try {
-      const response = await fetch(`http://192.168.1.2:8080/api/usuarios/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el usuario');
-      }
-
+      await apiClient.put(`/usuarios/${userId}`, dataToSend);
       Alert.alert('Éxito', 'Usuario actualizado correctamente');
       navigation.goBack(); 
     } catch (error) {

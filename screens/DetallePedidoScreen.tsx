@@ -3,6 +3,7 @@ import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-nat
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import apiClient from '../api/apiClient';
 
 type RootStackParamList = {
   DetallePedidoScreen: { numeroCuenta: string };
@@ -29,19 +30,9 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
   
     const fetchPedidoInfo = async () => {
       try {
-        const response = await fetch(`http://192.168.1.2:8080/api/pedidos/envio/${numeroCuenta}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
+        const response = await apiClient.get(`/pedidos/envio/${numeroCuenta}`);
   
-        if (!response.ok) {
-          throw new Error(`Error al cargar la información del pedido: ${response.status}`);
-        }
-  
-        const data = await response.json();
+        const data = response.data;
         setPedidoInfo(data);
   
         if (data.alertas) {

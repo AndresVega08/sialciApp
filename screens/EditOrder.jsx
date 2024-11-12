@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, TextInput, RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useUserContext } from '../context/UserContext';
+import apiClient from '../api/apiClient';
 
 const EditOrders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
@@ -13,13 +14,8 @@ const EditOrders = ({ navigation }) => {
   const fetchOrders = async () => {
     try {
       setRefreshing(true);
-      const response = await fetch('http://192.168.1.2:8080/api/pedidos');
-
-      if (!response.ok) {
-        throw new Error('Error al obtener la respuesta del servidor');
-      }
-
-      const data = await response.json();
+      const response = await apiClient.get('/pedidos');   
+      const data = response.data;
       console.log('Pedidos obtenidos:', data);
 
       setOrders(data);

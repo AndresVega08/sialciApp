@@ -3,9 +3,11 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Button, Ac
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { useUserContext } from '../context/UserContext';
+import apiClient from '../api/apiClient';
 
 const EditarProducto = ({ route, navigation }) => {
     const { id } = route.params;
+    console.log(id)
     const [producto, setProducto] = useState({
         nombre: '',
         descripcion: '',
@@ -19,7 +21,7 @@ const EditarProducto = ({ route, navigation }) => {
         const fetchProducto = async () => {
             setLoading(true); // Indicar que se está cargando
             try {
-                const response = await axios.get(`http://192.168.1.2:8080/api/productos/${id}`);
+                const response = await apiClient.get(`/productos/${id}`);
                 console.log('Datos del producto:', response.data); 
                 setProducto({
                     nombre: response.data.nombre,
@@ -84,7 +86,7 @@ const EditarProducto = ({ route, navigation }) => {
         }
 
         try {
-            const response = await axios.put(`http://192.168.1.2:8080/api/productos/${id}`, formData, {
+            const response = await apiClient.put(`/productos/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

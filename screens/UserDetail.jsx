@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import apiClient from '../api/apiClient';
 
 const UserDetail = ({ route, navigation }) => {
   const { user } = route.params; 
@@ -28,18 +29,7 @@ const UserDetail = ({ route, navigation }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.2:8080/api/usuarios/${user.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el usuario');
-      }
-
+      await apiClient.put(`/usuarios/${user.id}`,dataToSend);
       Alert.alert('Éxito', 'Usuario actualizado correctamente');
       navigation.goBack();
     } catch (error) {

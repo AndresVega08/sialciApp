@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useUserContext } from '../context/UserContext';
+import apiClient from '../api/apiClient';
 
 type RootStackParamList = {
   PedidosScreen: undefined;
@@ -30,28 +31,16 @@ const PedidosScreen: React.FC<Props> = ({ navigation }) => {
       }
 
       try {
-        const response = await fetch(
-          `http://192.168.1.2:8080/api/pedidos/usuario/${encodeURIComponent(userEmail)}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-          }
-        );
-
+        const response = await apiClient.get(`/pedidos/usuario/${encodeURIComponent(userEmail)}`);
         if (response.status === 204) {
           setPedidos([]);
           setNoPedidos(true);
           return;
         }
 
-        if (!response.ok) {
-          throw new Error(`Error al cargar los pedidos: ${response.status}`);
-        }
+       
 
-        const data = await response.json();
+        const data = response.data;
         setPedidos(data);
 
         if (data.length === 0) {

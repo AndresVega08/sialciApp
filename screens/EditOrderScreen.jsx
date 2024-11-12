@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Importamos Picker
+import apiClient from '../api/apiClient';
 
 const EditOrderScreen = ({ route, navigation }) => {
   const { order } = route.params;
@@ -29,18 +30,7 @@ const EditOrderScreen = ({ route, navigation }) => {
     console.log("Datos que se envían al backend:", dataToSend);
 
     try {
-      const response = await fetch(`http://192.168.1.2:8080/api/pedidos/${order.idPedidos}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend), 
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el pedido');
-      }
-
+      await apiClient.put(`/pedidos/${order.idPedidos}`, dataToSend);
       Alert.alert('Éxito', 'Pedido actualizado correctamente');
       navigation.goBack();
     } catch (error) {

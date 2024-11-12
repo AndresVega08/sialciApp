@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import apiClient from '../api/apiClient';
 
 const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -31,7 +32,7 @@ const RegisterScreen = ({ navigation }: any) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.2:8080/api/usuarios', { 
+      const response = await apiClient.post('/usuarios', { 
         correoUsua: email,
         passwordUsua: password,
         nombreUsua: name,
