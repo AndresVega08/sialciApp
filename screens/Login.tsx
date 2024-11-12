@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     marginBottom: 24,
     textAlign: 'center',
-    fontFamily: 'Open Sans', 
     fontWeight: 'bold',
   },
   input: {

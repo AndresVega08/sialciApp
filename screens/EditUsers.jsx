@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, FlatList } from 'react-native';
 import { useUserContext } from '../context/UserContext';
+import apiClient from '../api/apiClient';
 
 const EditUsers = ({ navigation }) => {
   const { userId } = useUserContext();
@@ -10,11 +11,9 @@ const EditUsers = ({ navigation }) => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.2:8080/api/usuarios`); 
-      if (!response.ok) {
-        throw new Error('Error al cargar los usuarios');
-      }
-      const usersData = await response.json();
+      const response = await apiClient.get(`/usuarios`); 
+     
+      const usersData = response.data;
       setUsers(usersData);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);

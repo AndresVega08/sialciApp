@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Button, FlatList, Image, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
 import { useUserContext } from '../context/UserContext';
-import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const Productos = ({ navigation }) => {
   const { userRole } = useUserContext();
   const [productos, setProductos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
+
   const fetchProductos = async () => {
     try {
-      const response = await axios.get('http://192.168.1.2:8080/api/productos');
-      console.log('Productos:', response.data);
+      const response = await apiClient.get('/productos');
       setProductos(response.data);
     } catch (err) {
       console.error('Error fetching productos:', err);
@@ -32,7 +32,7 @@ const Productos = ({ navigation }) => {
 
   const handleEliminarProducto = async (id) => {
     try {
-      const response = await axios.delete(`http://192.168.1.2:8080/api/productos/${id}`);
+      const response = await apiClient.delete(`/productos/${id}`);
       if (response.status === 200) {
         setProductos((prevProductos) => prevProductos.filter((producto) => producto.id !== id));
       } else {

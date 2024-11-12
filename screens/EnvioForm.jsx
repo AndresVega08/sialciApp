@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const EnvioForm = () => {
   const [senderName, setSenderName] = useState('');
@@ -124,7 +125,7 @@ const EnvioForm = () => {
       // Mostrar los datos por consola
       console.log('Datos enviados al backend:', requestData);
   
-      const response = await axios.post('http://192.168.1.2:8080/api/envio', requestData);
+      const response = await apiClient.post('/envio', requestData);
       Alert.alert('Éxito', response.data);
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al enviar los datos. Inténtalo de nuevo.');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://192.168.1.2:8080/api', 
+  baseURL: process.env.EXPO_PUBLIC_HOST, 
   withCredentials: true, 
 });
 
