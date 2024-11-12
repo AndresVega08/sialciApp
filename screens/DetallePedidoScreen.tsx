@@ -23,11 +23,10 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     if (!numeroCuenta) {
-      console.error("Número de cuenta no proporcionado.");
       setLoading(false);
       return;
     }
-
+  
     const fetchPedidoInfo = async () => {
       try {
         const response = await fetch(`http://192.168.1.2:8080/api/pedidos/envio/${numeroCuenta}`, {
@@ -37,14 +36,14 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
           },
           credentials: 'include',
         });
-
+  
         if (!response.ok) {
           throw new Error(`Error al cargar la información del pedido: ${response.status}`);
         }
-
+  
         const data = await response.json();
         setPedidoInfo(data);
-
+  
         if (data.alertas) {
           setAlertas(data.alertas);
         }
@@ -54,15 +53,15 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
         setLoading(false);
       }
     };
-
+  
     fetchPedidoInfo();
   }, [numeroCuenta]);
+  
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#007bff" style={styles.loading} />;
   }
 
-  // Esta función genera los puntos de la línea de progreso
   const renderProgresoEnvio = () => {
     const estados = ['Pedido recibido', 'En proceso', 'En tránsito', 'En destino', 'Entregado'];
     const estadoIndex = estados.indexOf(pedidoInfo?.estado || '');
@@ -70,32 +69,27 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
     return (
       <View style={styles.progressContainer}>
         <View style={styles.line}>
-          {/* Dibujar una línea conectando los puntos */}
           <View
             style={[
               styles.progressLine,
-              { width: `${(estadoIndex / (estados.length - 1)) * 100}%` }, // Ajustar la longitud de la línea según el progreso
+              { height: `${(estadoIndex / (estados.length - 1)) * 100}%` },
             ]}
           />
         </View>
         {estados.map((estado, index) => (
-          <View
-            key={index}
-            style={[
-              styles.progressDot,
-              index <= estadoIndex ? styles.activeDot : styles.inactiveDot,
-            ]}
-          >
-            {/* Mostrar el icono solo en el último estado alcanzado */}
-            {index === estadoIndex && (
-              <Icon
-                name="truck"
-                size={20}
-                color="white"
-                style={styles.icon}
-              />
-            )}
-            <Text style={styles.dotText}>{index + 1}</Text>
+          <View key={index} style={styles.stateRow}>
+            <View
+              style={[
+                styles.progressDot,
+                index <= estadoIndex ? styles.activeDot : styles.inactiveDot,
+              ]}
+            >
+              {index === estadoIndex && (
+                <Icon name="truck" size={20} color="white" style={styles.icon} />
+              )}
+              <Text style={styles.dotText}>{index + 1}</Text>
+            </View>
+            <Text style={styles.estadoText}>{estado}</Text>
           </View>
         ))}
       </View>
@@ -108,17 +102,14 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
         <>
           <Text style={styles.title}>Detalles del Pedido</Text>
 
-          {/* Mostrar información básica del pedido */}
-          <Text style={styles.label}>Correo del Usuario: {pedidoInfo.correoUsua}</Text>
+          <View style={styles.card}>
+            <Text style={styles.label}>Correo del Usuario: {pedidoInfo.correoUsua}</Text>
+            <Text style={styles.label}>Ubicación: {pedidoInfo.ubicacion || 'No disponible'}</Text>
+            <Text style={styles.label}>Estado: {pedidoInfo.estado || 'No disponible'}</Text>
+          </View>
 
-          {/* Mostrar la ubicación y el estado */}
-          <Text style={styles.label}>Ubicación: {pedidoInfo.ubicacion || 'No disponible'}</Text>
-          <Text style={styles.label}>Estado: {pedidoInfo.estado || 'No disponible'}</Text>
-
-          {/* Mostrar la línea de progreso del envío */}
           {renderProgresoEnvio()}
 
-          {/* Mostrar las alertas, si existen */}
           {alertas.length > 0 && (
             <View style={styles.alertContainer}>
               <Text style={styles.alertTitle}>Alertas:</Text>
@@ -130,16 +121,16 @@ const DetallePedidoScreen: React.FC<Props> = ({ route }) => {
             </View>
           )}
 
-          {/* Información adicional sobre el pedido */}
-          <Text style={styles.sectionTitle}>Información del Remitente:</Text>
-          <Text style={styles.label}>Nombre de la Empresa: {pedidoInfo.nombreEmpresaRemi}</Text>
-          <Text style={styles.label}>Dirección del Remitente: {pedidoInfo.direccionRemi}</Text>
-          <Text style={styles.label}>Teléfono del Remitente: {pedidoInfo.telefonoRemi}</Text>
-          <Text style={styles.label}>Número de Cuenta: {pedidoInfo.numeroCuenta}</Text>
-
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Información del Remitente:</Text>
+            <Text style={styles.label}>Nombre de la Empresa: {pedidoInfo.nombreEmpresaRemi}</Text>
+            <Text style={styles.label}>Dirección del Remitente: {pedidoInfo.direccionRemi}</Text>
+            <Text style={styles.label}>Teléfono del Remitente: {pedidoInfo.telefonoRemi}</Text>
+            <Text style={styles.label}>Número de Cuenta: {pedidoInfo.numeroCuenta}</Text>
+          </View>
         </>
       ) : (
-        <Text>No se encontró información del pedido.</Text>
+        <Text style={styles.noInfo}>No se encontró información del pedido.</Text>
       )}
     </ScrollView>
   );
@@ -149,68 +140,102 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f8f9fa',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#007bff',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   label: {
     fontSize: 16,
-    marginBottom: 5,
+    color: '#495057',
+    marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 20,
+    color: '#343a40',
     marginBottom: 10,
   },
   alertContainer: {
-    marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    backgroundColor: '#f8d7da',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 20,
   },
   alertTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'red',
+    color: '#721c24',
+    marginBottom: 10,
   },
   alertText: {
     fontSize: 16,
-    color: 'orange',
+    color: '#856404',
   },
   progressContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginVertical: 20,
+    paddingLeft: 32,
   },
   line: {
     position: 'absolute',
-    top: '50%',
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: '#ddd', 
+    left: 55, 
+    top: 25,
+    bottom: 25,
+    width: 4,
+    backgroundColor: '#e9ecef',
+    borderRadius: 2,
   },
   progressLine: {
-    height: 2,
-    backgroundColor: 'green', 
+    position: 'absolute',
+    left: 0, 
+    width: 4,
+    backgroundColor: '#28a745',
+    borderRadius: 2,
+  },
+  stateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15,
   },
   progressDot: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    zIndex: 2,
   },
   activeDot: {
-    backgroundColor: 'green',
+    backgroundColor: '#28a745',
   },
   inactiveDot: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#e9ecef',
   },
   icon: {
     marginBottom: 5,
@@ -218,6 +243,15 @@ const styles = StyleSheet.create({
   dotText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  estadoText: {
+    fontSize: 16,
+    color: '#495057',
+  },
+  noInfo: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#6c757d',
   },
 });
 

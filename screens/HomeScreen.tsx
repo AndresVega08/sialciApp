@@ -24,15 +24,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-
   useEffect(() => {
     const backAction = () => {
       Alert.alert('Confirmar salida', '¿Estás seguro de que deseas salir de la aplicación?', [
-        {
-          text: 'Cancelar',
-          onPress: () => null,
-          style: 'cancel',
-        },
+        { text: 'Cancelar', onPress: () => null, style: 'cancel' },
         { text: 'Salir', onPress: () => BackHandler.exitApp() },
       ]);
       return true; 
@@ -45,8 +40,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-
-      <Text style={styles.welcomeText}>Bienvenido {userName}</Text>
+      <Text style={styles.welcomeText}>Bienvenido, {userName}</Text>
 
       <View style={styles.row}>
         <TouchableOpacity
@@ -79,7 +73,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           onPress={() => navigation.navigate('EditProfile')} 
         >
           <MaterialIcons name="edit" size={35} color="#fff" />
-          <Text style={styles.menuText}>Editar información personal</Text>
+          <Text style={styles.menuText}>Editar perfil</Text>
         </TouchableOpacity>
       </View>
 
@@ -120,65 +114,75 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#e9ecef', 
+    backgroundColor: '#f5f6fa',
   },
   welcomeText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 26,
+    fontWeight: '600',
+    color: '#2f3640',
+    marginBottom: 25,
     textAlign: 'center',
-    color: '#343a40',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 25,
+    marginBottom: 20,
   },
   menuItem: {
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#007bff', 
+    backgroundColor: '#3498db',
     paddingVertical: 20,
-    borderRadius: 15,
-    marginHorizontal: 10,
-    elevation: 5, 
+    borderRadius: 12,
+    marginHorizontal: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   menuText: {
-    fontSize: 20,
-    marginTop: 8,
-    textAlign: 'center',
-    color: '#fff',
+    fontSize: 18,
+    color: '#ffffff',
+    marginTop: 6,
   },
   adminButton: {
     alignItems: 'center',
-    backgroundColor: '#28a745', 
+    backgroundColor: '#27ae60',
     paddingVertical: 20,
     flex: 1,
-    borderRadius: 15,
-    marginHorizontal: 10,
-    elevation: 5, 
+    borderRadius: 12,
+    marginHorizontal: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   adminText: {
-    fontSize: 20,
-    marginTop: 8,
-    textAlign: 'center',
-    color: '#fff',
+    fontSize: 18,
+    color: '#ffffff',
+    marginTop: 6,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#dc3545', 
+    backgroundColor: '#e74c3c',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 12,
     marginTop: 30,
-    elevation: 5, 
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   logoutText: {
-    fontSize: 20,
+    fontSize: 18,
+    color: '#ffffff',
     marginLeft: 10,
-    color: '#fff',
   },
 });
 

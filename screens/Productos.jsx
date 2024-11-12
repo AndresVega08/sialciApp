@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Button, FlatList, Image, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, Button, FlatList, Image, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
 import { useUserContext } from '../context/UserContext';
 import axios from 'axios';
 
@@ -8,11 +8,10 @@ const Productos = ({ navigation }) => {
   const [productos, setProductos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Función para obtener productos desde la API
   const fetchProductos = async () => {
     try {
       const response = await axios.get('http://192.168.1.2:8080/api/productos');
-      console.log('Productos:', response.data); 
+      console.log('Productos:', response.data);
       setProductos(response.data);
     } catch (err) {
       console.error('Error fetching productos:', err);
@@ -20,19 +19,17 @@ const Productos = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchProductos(); 
+    fetchProductos();
   }, []);
 
-  
   const handleAgregarProducto = () => {
     navigation.navigate('AgregarProducto', {
       onGoBack: () => {
-        fetchProductos(); 
+        fetchProductos();
       },
     });
   };
 
-  // Función para manejar la eliminación de productos
   const handleEliminarProducto = async (id) => {
     try {
       const response = await axios.delete(`http://192.168.1.2:8080/api/productos/${id}`);
@@ -46,28 +43,36 @@ const Productos = ({ navigation }) => {
     }
   };
 
-  // Función para refrescar la lista de productos
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchProductos().then(() => setRefreshing(false));
   }, []);
 
-  // Renderiza cada producto
   const renderProduct = ({ item }) => (
     <View style={styles.productContainer}>
       <Image
-        source={{ uri: `data:image/jpeg;base64,${item.imagen}` }} 
+        source={{ uri: `data:image/jpeg;base64,${item.imagen}` }}
         style={styles.productImage}
       />
       <View style={styles.productDetails}>
-        <Text style={styles.productName}>Nombre: {item.nombre}</Text>
-        <Text style={styles.productDescription}>Descripción: {item.descripcion}</Text>
-        <Text style={styles.productPrice}>Precio: ${item.precio}</Text>
+        <Text style={styles.productName}>{item.nombre}</Text>
+        <Text style={styles.productDescription}>{item.descripcion}</Text>
+        <Text style={styles.productPrice}>${item.precio}</Text>
       </View>
       {userRole === '1' && (
         <View style={styles.buttonContainer}>
-          <Button title="Editar" onPress={() => navigation.navigate('EditarProducto', { id: item.id })} />
-          <Button title="Eliminar" color="red" onPress={() => handleEliminarProducto(item.id)} />
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => navigation.navigate('EditarProducto', { id: item.id })}
+          >
+            <Text style={styles.buttonText}>Editar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleEliminarProducto(item.id)}
+          >
+            <Text style={styles.buttonText}>Eliminar</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -84,7 +89,9 @@ const Productos = ({ navigation }) => {
         }
       />
       {userRole === '1' && (
-        <Button title="Agregar Producto" onPress={handleAgregarProducto} />
+        <TouchableOpacity style={styles.addButton} onPress={handleAgregarProducto}>
+          <Text style={styles.addButtonText}>Agregar Producto</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -95,47 +102,80 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f3f4f6',
   },
   productContainer: {
     backgroundColor: '#ffffff',
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 16,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    shadowRadius: 1.5,
-    elevation: 2,
+    shadowRadius: 5,
+    elevation: 4,
   },
   productImage: {
     width: '100%',
-    height: 150,
+    height: 180,
     borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   productDetails: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
   productName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 6,
   },
   productDescription: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    color: '#777777',
+    marginBottom: 6,
   },
   productPrice: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#007bff',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 12,
+  },
+  editButton: {
+    flex: 1,
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    marginRight: 10,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: '#dc3545',
+    paddingVertical: 10,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  addButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 14,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  addButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

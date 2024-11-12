@@ -66,7 +66,7 @@ export default function App() {
           <Stack.Screen
             name="DetallePedidoScreen"
             component={DetallePedidoScreen}
-            options={{ title: 'Detalles del Pedido' }}
+            options={{ title: '' }}
           />
           <Stack.Screen
             name="EditarProducto"
@@ -85,7 +85,7 @@ export default function App() {
           <Stack.Screen
             name="EditProfile"
             component={EditProfile}
-            options={{ title: 'Editar Usuarios'}}
+            options={{ title: ''}}
           />
           <Stack.Screen
             name="EditUsers"

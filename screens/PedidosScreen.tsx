@@ -90,9 +90,9 @@ const PedidosScreen: React.FC<Props> = ({ navigation }) => {
         data={pedidos}
         keyExtractor={(item) => item.idPedidos.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handlePedidoPress(item.numeroCuenta)} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => handlePedidoPress(item.numeroCuenta)} activeOpacity={0.85}>
             <View style={styles.pedidoItem}>
-              <Text style={styles.pedidoText}>ID Pedido: <Text style={styles.boldText}>{item.idPedidos}</Text></Text>
+              <Text style={styles.pedidoTitle}>Pedido ID: {item.idPedidos}</Text>
               <Text style={styles.pedidoText}>Número de cuenta: <Text style={styles.boldText}>{item.numeroCuenta}</Text></Text>
               <Text style={styles.pedidoText}>Correo: <Text style={styles.boldText}>{item.correoUsua}</Text></Text>
               <Text style={styles.pedidoText}>Dirección: <Text style={styles.boldText}>{item.direccionRemi}</Text></Text>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f2f5',
   },
   loadingIndicator: {
     flex: 1,
@@ -121,35 +121,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pedidoItem: {
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#007bff',
+    padding: 18,
+    borderWidth: 0,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4, 
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  pedidoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007bff',
+    marginBottom: 8,
   },
   pedidoText: {
     fontSize: 16,
-    color: '#343a40',
-    marginVertical: 2, 
+    color: '#495057',
+    marginVertical: 2,
   },
   boldText: {
-    fontWeight: 'bold',
-    color: '#495057', 
+    fontWeight: '600',
+    color: '#343a40',
   },
   errorText: {
-    color: 'red',
+    color: '#dc3545',
     textAlign: 'center',
     marginTop: 20,
-    fontSize: 18, 
+    fontSize: 18,
   },
   listContent: {
-    paddingBottom: 20, 
+    paddingBottom: 20,
   },
 });
 
